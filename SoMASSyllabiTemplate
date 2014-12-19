@@ -1,17 +1,17 @@
 // Base Code by TJ Houston tjhouston.com (tj@tjhouston.com)
 // Code Modified by Mark Lang (mark.lang@stonybrook.edu)
 // Get template from Google Docs and name it
-var docTemplate = "1tj9fwoec9pLg1dlumHTj1O1-sDYZ4urKKhd3hxNBYMM"; // *** replace with your template ID ***
+var docTemplate = "Your Document Template"; // *** replace with your template ID ***
 var docName = "SBUSyllabi-";
-var folder = DocsList.getFolder('Syllabus Maker'); //Use this line if you want to get the folder by name
-//var folder = DocsList.getFileById('0B2nAWIl0sos5MWNDYkp5cnBHcHM'); //Use this line if you want to get the folder by ID
+var folder = DocsList.getFolder('Folder Name'); //Use this line if you want to get the folder by name
+//var folder = DocsList.getFileById('folderid'); //Use this line if you want to get the folder by ID
 
 // When Form Gets submitted
 function onFormSubmit(e) {
 //Get information from form and set as variables
 var email_address = e.namedValues["Username"];
-var other_email_address = "mark.lang@stonybrook.edu, somas.sbu@gmail.com";
-var allrecipients = email_address + ", " + other_email_address;
+var other_email_address = "your.email@stonybrook.edu";  //add in email addresses to send all files to
+var allrecipients = email_address + ", " + other_email_address; // detect email address from username and add to senders list
 var course_title = e.values[3];
 
 // Get document template, copy it as a new temp doc, and save the Doc’s id
