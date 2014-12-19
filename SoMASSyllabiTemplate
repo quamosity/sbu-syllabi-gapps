@@ -1,0 +1,58 @@
+// Base Code by TJ Houston tjhouston.com (tj@tjhouston.com)
+// Code Modified by Mark Lang (mark.lang@stonybrook.edu)
+// Get template from Google Docs and name it
+var docTemplate = "1tj9fwoec9pLg1dlumHTj1O1-sDYZ4urKKhd3hxNBYMM"; // *** replace with your template ID ***
+var docName = "SBUSyllabi-";
+var folder = DocsList.getFolder('Syllabus Maker'); //Use this line if you want to get the folder by name
+//var folder = DocsList.getFileById('0B2nAWIl0sos5MWNDYkp5cnBHcHM'); //Use this line if you want to get the folder by ID
+
+// When Form Gets submitted
+function onFormSubmit(e) {
+//Get information from form and set as variables
+var email_address = e.namedValues["Username"];
+var other_email_address = "mark.lang@stonybrook.edu, somas.sbu@gmail.com";
+var allrecipients = email_address + ", " + other_email_address;
+var course_title = e.values[3];
+
+// Get document template, copy it as a new temp doc, and save the Doc’s id
+var copyId = DocsList.getFileById(docTemplate)
+.makeCopy(docName+course_title)
+.getId();
+// Open the temporary document
+var copyDoc = DocumentApp.openById(copyId);
+// Get the document’s body section
+var copyBody = copyDoc.getActiveSection();
+
+// Replace place holder keys in our google doc template
+copyBody.replaceText('keySemester ', e.namedValues["Semester of Class"]);
+copyBody.replaceText('keyYear', e.namedValues["Year of Course"]);
+copyBody.replaceText('keyCourseTitle', e.namedValues["Full Course Title"]);
+copyBody.replaceText('keyDECCat', e.namedValues["DEC categories satisfied"]);
+copyBody.replaceText('keySBCCat', e.namedValues["SBC categories satisfied"]);
+copyBody.replaceText('keyInstructorName', e.namedValues["Course Instructor"]);;
+copyBody.replaceText('keySectionNumber', e.namedValues["Section Number"]);
+copyBody.replaceText('keyOfficeHours', e.namedValues["Office Hours"]);
+copyBody.replaceText('keyInstructorEmailAddress', e.namedValues["Email Address Instructor"]);
+copyBody.replaceText('keyTAInformation', e.namedValues["TA Information"]);
+copyBody.replaceText('keyCourseDescription', e.namedValues["Course Description"]);
+copyBody.replaceText('keyCourseLearningObjectives', e.namedValues["Course Learning Objectives"]);
+copyBody.replaceText('keyAttendancePolicy', e.namedValues["Attendance Policy"]);
+copyBody.replaceText('keyCollegeSchool', e.namedValues["College or School"]);
+
+// Save and close the temporary document
+//copyDoc.addToFolder(folder); //This line will move the folder
+DocsList.getFileById(copyId).addToFolder(folder)
+copyDoc.saveAndClose();
+//DocsList.removeFromFolder(DocsList.getRootFolder(DocsList.getFileById(copyId))); //This line is needed to remove the File from the Root folder
+
+// Convert temporary document to PDF
+var pdf = DocsList.getFileById(copyId).getAs("application/pdf");
+
+// Attach PDF and send the email
+var subject = "SBU Course Syllabus Generated";
+var body = "Here is the Syllabus for " + course_title + " created by " + email_address + " ";
+MailApp.sendEmail(allrecipients, subject, body, {htmlBody: body, attachments: pdf});
+
+// Delete temp file - remove // from line below if you DO NOT want to keep the Google Document file
+//DocsList.getFileById(copyId).setTrashed(true);
+}
